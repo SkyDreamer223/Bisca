@@ -31,7 +31,8 @@ class Player:
 
     def draw_cards(self):
         for card in self.hand:
-            screen.blit(pygame.transform.flip(card.image, False, False), card.rect)
+            if self.is_bot:
+                screen.blit(pygame.transform.flip(card.image, False, False), card.rect)
 
 
     def update_animation(self):
@@ -54,6 +55,8 @@ class Player:
                 # Move the card
                 card.rect.centerx += delta_x * self.animation_speed / distance
                 card.rect.centery += delta_y * self.animation_speed / distance
+
+
     def card_pressed(self):
         if self.is_bot or self.animation_cooldown > 0:
             return False
@@ -88,6 +91,7 @@ class Game:
         self.deal_initial_cards()
         self.current_turn = self.p1 if self.p1.last_winner else self.p2  # Set the first turn based on the last winner
         self.animation_cooldown = 0
+        self.table = []
     
     def draw_deck(self):
         #screen.blit(pygame.transform.scale(card_back, (card_back.get_width() // 4, card_back.get_height() // 4)), (SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 - 70))
@@ -123,6 +127,21 @@ class Game:
     def switch_turn(self):
         self.current_turn = self.p1 if self.current_turn == self.p2 else self.p2
 
+    def draw_table(self):
+        for card in self.table:
+            screen.blit(card.image, card.rect)
+    
+    def game_updates(self):
+        g.p2.update_animation()
+        g.p1.update_animation()
+        g.p2.draw_cards()
+        g.p1.draw_cards()
+        g.update_cooldowns()
+        g.draw_table()
+    
+    
+
+
 g = Game()
 
 run = True
@@ -130,11 +149,8 @@ run = True
 while run:
     clock.tick(FPS)
     draw_bg()
-    g.p2.update_animation()
-    g.p1.update_animation()
-    g.p2.draw_cards()
-    g.p1.draw_cards()
-    g.update_cooldowns()
+    g.game_updates()
+    
     
 
     if not g.current_turn.selected_card:

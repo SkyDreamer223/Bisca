@@ -22,8 +22,11 @@ class Card:
         self.rank = card_values.index(input_value)
         self.score = points[input_value]
         self.image = pygame.image.load(f'graphics/{self.id}.png').convert_alpha()
-        self.image = pygame.transform.scale(self.image, (int(self.image.get_width()/6), int(self.image.get_height()/6)))
+        self.image = pygame.transform.scale(self.image, (int(self.image.get_width()/4), int(self.image.get_height()/4)))
+        self.back_image = pygame.image.load('graphics/back.png').convert_alpha()
+        self.back_image = pygame.transform.scale(self.back_image, (int(self.back_image.get_width()/4), int(self.back_image.get_height()/4)))
         self.rect = self.image.get_rect()
+        self.visible = False
 
     
     def __str__(self):
